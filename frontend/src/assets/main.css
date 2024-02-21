@@ -1,6 +1,7 @@
 @import './base.css';
 
 #app {
+  /* id为app的元素,最大宽度不能超过1280px，如果浏览器窗口的宽度小于1280px，宽度会自动适应*/
   max-width: 1280px;
   margin: 0 auto;
   padding: 2rem;
@@ -21,15 +22,20 @@ a,
   }
 }
 
+/* 当浏览器窗口的宽度大于或等于1024px时，应用以下的样式 */
 @media (min-width: 1024px) {
   body {
     display: flex;
+    /* 内容使用弹性布局，可以自动调整子元素的大小和位置 */
     place-items: center;
+    /* body子元素在水平和垂直方向上都居中对齐 */
   }
 
-  #app {
+  /* #app {
     display: grid;
-    grid-template-columns: 1fr 1fr;
+    网格布局，1fr 1fr两列，每列占据一个弹性系数，即剩余空间的一半
+    grid-template-columns: 1fr 5fr 1fr;
     padding: 0 2rem;
-  }
+    左右内边距为2个根元素字体大小的单位
+  } */
 }
