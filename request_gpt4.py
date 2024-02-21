@@ -21,10 +21,12 @@ class GptJudgeMain:
         # 忽略HTTPS告警
         urllib3.disable_warnings()
         # 获取当前文件路径
-        current_path = os.path.dirname(__file__)
+        current_path = os.path.dirname(__file__) # 返回当前文件所在的目录名称
 
         # 初始化读取配置文件
-        config = yaml.load(open(current_path + './Config/config.yaml', encoding='UTF-8'), yaml.Loader)
+        config = yaml.safe_load(open(os.path.join(current_path, "Config", "config.yaml"), encoding='UTF-8'))
+        # config = yaml.load(open(current_path + './Config/config.yaml', encoding='UTF-8'), yaml.Loader)
+        # docker会路径错误，因为您在current_path后面加了一个点，表示当前目录，而不是当前文件所在的目录
         self.OpenAi_Initiating_System_Message = config['Prompts']['Initiating_System_Message']
         self.OpenAi_Initiating_User_Message = config['Prompts']['Initiating_User_Message']
         self.OpenAi_Key = config['Api_Config']['OpenAi_Key']
@@ -33,24 +35,27 @@ class GptJudgeMain:
         self.messages = [{"role": "system", "content": f"{self.OpenAi_Initiating_System_Message}"}]
 
     # AI对话接口
-    def get_ai_judge(self, file):
-        judge_content = self.OpenAi_Initiating_User_Message + file
-        output('[-]:正在调用AI对话API接口... ...')
-        # output(judge_content)
+    def get_ai_judge(self, file, filename):
+        judge_content = self.OpenAi_Initiating_User_Message.format(filename) + file  # 将文件名拼接到user message中
+        output('[-]:正在调用AI接口进行代码分析... ...')
+        output(judge_content)
         self.messages.append({"role": "user", "content": f'{judge_content}'})
 
         headers = {}
         body_data = {
             "api_key": self.OpenAi_Key,
-            "model": "gpt-4",
+            "model": "gpt-4-0125-preview",  # "gpt-4"
             "messages": self.messages
         }
-        url = 'http://proxy-这里需要替换GPT代理-1.fcapp.run/chat'  # 'https://api.openai.com/v1/chat/completions'
+        url = 'http://proxy-script-scr替换为你自己的代理app.run/chat'  # 'https://api.openai.com/v1/chat/completions'
 
         try:
+            output("1")
             resp = requests.post(url=url, headers=headers, json=body_data, timeout=300)
+            output(resp)
+            output("2")
             json_data = resp.json()
-            # output(json_data)
+            output(json_data)
             assistant_content = json_data['result']['choices'][0]['message']['content']
         except Exception as e:
             output(f'[ERROR]:AI对话接口出现错误，错误信息： {e}')
