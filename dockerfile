@@ -8,7 +8,7 @@ WORKDIR /JudgeSys_app
 COPY . /JudgeSys_app
 
 # 安装依赖包
-RUN pip install --no-cache-dir -r requirements.txt
+RUN pip install -i https://mirrors.aliyun.com/pypi/simple/ --no-cache-dir -r requirements.txt
 
 # 暴露容器的5431端口
 EXPOSE 5431
